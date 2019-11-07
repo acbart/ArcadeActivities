@@ -1,4 +1,5 @@
 import arcade
+import random
 
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 500
@@ -16,17 +17,22 @@ NEXT_PHASE = {
     'waiting again': 'spinning forward'
     }
 
+# Preload images
+IMAGE_ADA = arcade.load_texture("images/ada.png")
+IMAGE_BANNER = arcade.load_texture("images/cisc108_banner.png")
+
 
 class Cisc108Logo(arcade.Sprite):
     phase: str
     timer: int
 
     def __init__(self):
-        super().__init__("images/cisc108_banner.png")
+        super().__init__()
         self.phase = 'waiting'
         self.timer = 0
         self.center_x = WINDOW_WIDTH/2
         self.center_y = WINDOW_HEIGHT/2
+        self.texture = IMAGE_BANNER
 
     def update_timer(self):
         if self.timer < TIMER_MAXIMUM:
@@ -42,11 +48,17 @@ class Cisc108Logo(arcade.Sprite):
         elif self.phase == 'spinning backward':
             self.angle = 360 * (1 - progress)
         else:
-            self.angle = 0
+            self.angle = random.randint(0, 360)
 
     def update(self):
         self.update_timer()
         self.update_angle()
+
+    def switch_image(self):
+        if self.texture == IMAGE_BANNER:
+            self.texture = IMAGE_ADA
+        else:
+            self.texture = IMAGE_BANNER
 
 
 class Cisc108Game(arcade.Window):
@@ -59,6 +71,20 @@ class Cisc108Game(arcade.Window):
         self.logo_list = arcade.SpriteList()
         self.logo_list.append(Cisc108Logo())
 
+        # Add a second logo!
+        #another = Cisc108Logo()
+        #another.phase = 'spinning backward'
+        #another.center_x = 50
+        #another.center_y = 50
+        #self.logo_list.append(another)
+
+        # Add 50 logos!
+        #for i in range(50):
+        #    l = Cisc108Logo()
+        #    l.center_x = random.randint(0, WINDOW_WIDTH)
+        #    l.center_y = random.randint(0, WINDOW_HEIGHT)
+        #    self.logo_list.append(l)
+
     def on_draw(self):
         """ Called when it is time to draw the world """
         arcade.start_render()
@@ -66,6 +92,10 @@ class Cisc108Game(arcade.Window):
 
     def on_update(self, delta_time):
         self.logo_list.update()
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        for logo in self.logo_list:
+            logo.switch_image()
 
 def main():
     window = Cisc108Game()
