@@ -1,0 +1,8 @@
+import arcade
+
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+BACKGROUND_COLOR = arcade.color.BLACK
+GAME_TITLE = "Introduction"
+
+TIMER_MAXIMUM = 100
